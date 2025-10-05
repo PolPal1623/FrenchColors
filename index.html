@@ -449,7 +449,7 @@
   <header role="banner">
     <div class="brand" aria-label="Логотип Couleurs FR">Couleurs FR</div>
     <nav aria-label="Основная навигация">
-      <button type="button" class="btn-ghost theme-toggle" aria-pressed="false" aria-label="Переключить тему" id="themeToggle">Тема</button>
+      <button type="button" class="btn-ghost theme-toggle" aria-pressed="false" aria-label="Переключить тему" id="themeToggle">Светлая тема</button>
     </nav>
   </header>
   <main id="app" role="main" aria-labelledby="appTitle">
@@ -500,6 +500,7 @@
     const QUESTION_TYPES = ['input', 'choice'];
     const TOTAL_ROUNDS = COLORS.length;
     const STORAGE_KEY_THEME = 'couleurs-fr-theme';
+    let currentTheme = 'light';
 
     // ==== СОСТОЯНИЕ ====
     const gameState = {
@@ -567,24 +568,12 @@
     }
 
     function setTheme(theme) {
+      currentTheme = theme === 'dark' ? 'dark' : 'light';
       document.body.classList.remove('theme-light', 'theme-dark');
-      if (theme === 'dark') {
-        document.body.classList.add('theme-dark');
-        themeToggle.setAttribute('aria-pressed', 'true');
-        themeToggle.textContent = 'Светлая тема';
-      } else if (theme === 'light') {
-        document.body.classList.add('theme-light');
-        themeToggle.setAttribute('aria-pressed', 'true');
-        themeToggle.textContent = 'Тёмная тема';
-      } else {
-        applySystemTheme();
-      }
-    }
-
-    function applySystemTheme() {
-      document.body.classList.remove('theme-light', 'theme-dark');
-      themeToggle.setAttribute('aria-pressed', 'false');
-      themeToggle.textContent = 'Тема';
+      const isDark = currentTheme === 'dark';
+      document.body.classList.add(isDark ? 'theme-dark' : 'theme-light');
+      themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      themeToggle.textContent = isDark ? 'Тёмная тема' : 'Светлая тема';
     }
 
     function persistTheme(theme) {
@@ -603,13 +592,12 @@
         storedTheme = null;
       }
 
-      if (storedTheme === 'light' || storedTheme === 'dark') {
-        setTheme(storedTheme);
-        return storedTheme;
-      }
+      const themeToApply = storedTheme === 'light' || storedTheme === 'dark'
+        ? storedTheme
+        : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
-      applySystemTheme();
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      setTheme(themeToApply);
+      return themeToApply;
     }
 
     function getCurrentColor() {
@@ -934,27 +922,9 @@
     }
 
     function onToggleTheme() {
-      const hasLight = document.body.classList.contains('theme-light');
-      const hasDark = document.body.classList.contains('theme-dark');
-
-      if (!hasLight && !hasDark) {
-        setTheme('light');
-        persistTheme('light');
-        return;
-      }
-
-      if (hasLight) {
-        setTheme('dark');
-        persistTheme('dark');
-        return;
-      }
-
-      applySystemTheme();
-      try {
-        localStorage.removeItem(STORAGE_KEY_THEME);
-      } catch (error) {
-        console.warn('Не удалось удалить тему', error);
-      }
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(nextTheme);
+      persistTheme(nextTheme);
     }
 
     function openDialog(dialog) {
