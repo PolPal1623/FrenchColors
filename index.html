@@ -461,7 +461,6 @@
           <span id="roundCounterDisplay">1</span>
           <span class="progress-total">/ 8</span>
         </div>
-        <div class="muted" id="progressSummary">Начнём!</div>
       </div>
       <progress id="progressBar" max="8" value="0" aria-describedby="progressTitle">0</progress>
     </section>
@@ -522,7 +521,6 @@
     const feedbackNode = document.getElementById('feedback');
     const roundCounter = document.getElementById('roundCounter');
     const progressBar = document.getElementById('progressBar');
-    const progressSummary = document.getElementById('progressSummary');
     const roundCounterDisplay = document.getElementById('roundCounterDisplay');
     const resultsDialog = document.getElementById('resultsDialog');
     const resultsBody = document.getElementById('resultsBody');
@@ -678,11 +676,6 @@
       roundCounterDisplay.textContent = visibleRound;
       progressBar.value = gameState.roundIndex;
       progressBar.textContent = `${gameState.roundIndex}`;
-      if (gameState.roundIndex < TOTAL_ROUNDS) {
-        progressSummary.textContent = `Сейчас цвет: ${getCurrentColor().ruName}`;
-      } else {
-        progressSummary.textContent = 'Раунды завершены';
-      }
     }
 
     function renderRound() {
@@ -765,7 +758,6 @@
       roundCounterDisplay.textContent = TOTAL_ROUNDS;
       progressBar.value = TOTAL_ROUNDS;
       progressBar.textContent = `${TOTAL_ROUNDS}`;
-      progressSummary.textContent = 'Раунды завершены';
 
       const correctCount = gameState.answers.filter(answer => answer.isCorrect).length;
       resultsBody.innerHTML = `
@@ -1006,10 +998,6 @@
       gameState.startedAt = Date.now();
       gameState.isRoundChecked = false;
       gameState.selectedChoice = null;
-
-      if (resetAnswersOnly) {
-        progressSummary.textContent = 'Начнём!';
-      }
 
       renderRound();
     }
