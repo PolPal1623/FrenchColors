@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Couleurs FR — тренажёр цветов</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --fg: #1f2933;
+      --muted: #5f6b7d;
+      --accent: #6366f1;
+      --ok: #2ecc71;
+      --error: #e74c3c;
+      --shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+      --radius: 16px;
+      --transition: 180ms ease;
+      --input-bg: rgba(255, 255, 255, 0.85);
+      --input-border: rgba(99, 102, 241, 0.3);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --surface: #111c34;
+        --fg: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #818cf8;
+        --shadow: 0 18px 36px rgba(15, 23, 42, 0.55);
+        --input-bg: rgba(17, 24, 39, 0.6);
+        --input-border: rgba(129, 140, 248, 0.4);
+      }
+    }
+
+    body.theme-light {
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --fg: #1f2933;
+      --muted: #5f6b7d;
+      --accent: #6366f1;
+      --shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+      --input-bg: rgba(255, 255, 255, 0.85);
+      --input-border: rgba(99, 102, 241, 0.3);
+    }
+
+    body.theme-dark {
+      --bg: #0f172a;
+      --surface: #111c34;
+      --fg: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #818cf8;
+      --shadow: 0 18px 36px rgba(15, 23, 42, 0.55);
+      --input-bg: rgba(17, 24, 39, 0.6);
+      --input-border: rgba(129, 140, 248, 0.4);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    header,
+    footer {
+      padding: 1rem clamp(1rem, 4vw, 2rem);
+      background: transparent;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    main {
+      flex: 1;
+      width: min(100%, 840px);
+      margin: 0 auto;
+      padding: clamp(1rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1rem, 4vw, 2rem);
+    }
+
+    footer {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .progress-card,
+    .round-card,
+    .status-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(1rem, 4vw, 2rem);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-display {
+      font-weight: 600;
+      font-size: 1.1rem;
+      display: inline-flex;
+      gap: 0.25rem;
+      align-items: baseline;
+    }
+
+    .progress-display .progress-total {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    progress {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    progress::-webkit-progress-bar {
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    progress::-webkit-progress-value {
+      background-color: var(--accent);
+    }
+
+    progress::-moz-progress-bar {
+      background-color: var(--accent);
+    }
+
+    .round-title {
+      font-size: clamp(1.375rem, 4vw, 2rem);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .round-body {
+      display: grid;
+      gap: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .color-swatch {
+      width: clamp(120px, 50vw, 180px);
+      height: clamp(120px, 50vw, 180px);
+      border-radius: 50%;
+      margin: 0 auto;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+      border: 4px solid rgba(0, 0, 0, 0.08);
+      transition: transform var(--transition);
+    }
+
+    .color-swatch.small {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      border-width: 3px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    form {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: inherit;
+      font-size: 1rem;
+      transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    button {
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition), color var(--transition), border-color var(--transition);
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 12px 22px rgba(99, 102, 241, 0.26);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: rgba(99, 102, 241, 0.4);
+      color: var(--accent);
+    }
+
+    .btn-surface {
+      background: var(--surface);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: inherit;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .theme-toggle[aria-pressed="true"] {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .choice-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .choice-option {
+      border-radius: var(--radius);
+      padding: 1rem;
+      background: var(--surface);
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .choice-option[aria-checked="true"] {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+    }
+
+    .option-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .pronounce {
+      display: inline-flex;
+      gap: 0.4rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .result-status {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .result-status.ok {
+      color: var(--ok);
+    }
+
+    .result-status.error {
+      color: var(--error);
+    }
+
+    .status-card {
+      border-left: 5px solid var(--accent);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    dialog {
+      border: none;
+      border-radius: var(--radius);
+      padding: clamp(1.25rem, 4vw, 2rem);
+      max-width: min(90vw, 520px);
+      box-shadow: var(--shadow);
+      background: var(--surface);
+      color: var(--fg);
+    }
+
+    dialog::backdrop {
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .dialog-body {
+      display: grid;
+      gap: 1rem;
+      font-size: 1rem;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 0.75rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .result-item {
+      display: grid;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .result-item .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .badge.ok {
+      background: rgba(46, 204, 113, 0.18);
+      color: var(--ok);
+    }
+
+    .badge.error {
+      background: rgba(231, 76, 60, 0.18);
+      color: var(--error);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .answer-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: center;
+    }
+
+    .answer-display strong {
+      font-size: 1.25rem;
+    }
+
+    .feedback-region {
+      min-height: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .round-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <div class="brand" aria-label="Логотип Couleurs FR">Couleurs FR</div>
+    <nav aria-label="Основная навигация">
+      <button type="button" class="btn-ghost theme-toggle" aria-pressed="false" aria-label="Переключить тему" id="themeToggle">Тема</button>
+    </nav>
+  </header>
+  <main id="app" role="main" aria-labelledby="appTitle">
+    <h1 id="appTitle" class="sr-only">Couleurs FR — тренажёр цветов на французском языке</h1>
+    <section class="progress-card" role="region" aria-labelledby="progressTitle">
+      <h2 id="progressTitle" class="sr-only">Прогресс тренировки: раунд <span id="roundCounter">1</span> из 8</h2>
+      <div class="progress-header">
+        <div class="progress-display" aria-hidden="true">
+          <span id="roundCounterDisplay">1</span>
+          <span class="progress-total">/ 8</span>
+        </div>
+        <div class="muted" id="progressSummary">Начнём!</div>
+      </div>
+      <progress id="progressBar" max="8" value="0" aria-describedby="progressTitle">0</progress>
+    </section>
+
+    <section class="round-card" id="roundContainer" role="region" aria-live="polite" aria-labelledby="roundTitle" tabindex="-1">
+      <h2 class="sr-only" id="roundTitle">Загрузка…</h2>
+      <div class="round-body" id="roundBody"></div>
+    </section>
+
+    <section class="status-card" role="region" aria-live="assertive" aria-atomic="true">
+      <div class="feedback-region" id="feedback"></div>
+    </section>
+  </main>
+  <footer role="contentinfo">Сделано для практики — Couleurs FR · v1.0</footer>
+
+  <dialog id="resultsDialog" aria-labelledby="resultsTitle" aria-modal="true">
+    <div class="dialog-header">
+      <h2 id="resultsTitle">Итоги тренировки</h2>
+      <button type="button" class="btn-ghost" id="closeResults">Закрыть</button>
+    </div>
+    <div class="dialog-body" id="resultsBody"></div>
+  </dialog>
+
+  <script>
+    // ==== ДАННЫЕ ====
+    const COLORS = [
+      { id: 1, hex: '#E74C3C', ruName: 'красный', frName: 'rouge', frIPA: '/ʁuʒ/', ruPhon: '[руж]' },
+      { id: 2, hex: '#3498DB', ruName: 'синий', frName: 'bleu', frIPA: '/blø/', ruPhon: '[блё]' },
+      { id: 3, hex: '#27AE60', ruName: 'зелёный', frName: 'vert', frIPA: '/vɛʁ/', ruPhon: '[вэр]' },
+      { id: 4, hex: '#F1C40F', ruName: 'жёлтый', frName: 'jaune', frIPA: '/ʒon/', ruPhon: '[жон]' },
+      { id: 5, hex: '#2C3E50', ruName: 'чёрный', frName: 'noir', frIPA: '/nwaʁ/', ruPhon: '[нуар]' },
+      { id: 6, hex: '#ECF0F1', ruName: 'белый', frName: 'blanc', frIPA: '/blɑ̃/', ruPhon: '[блан]' },
+      { id: 7, hex: '#E67E22', ruName: 'оранжевый', frName: 'orange', frIPA: '/ɔʁɑ̃ʒ/', ruPhon: '[оранж]' },
+      { id: 8, hex: '#8E44AD', ruName: 'фиолетовый', frName: 'violet', frIPA: '/vjɔlɛ/', ruPhon: '[виолэ]' }
+    ];
+
+    const QUESTION_TYPES = ['input', 'choice'];
+    const TOTAL_ROUNDS = COLORS.length;
+    const STORAGE_KEY_THEME = 'couleurs-fr-theme';
+
+    // ==== СОСТОЯНИЕ ====
+    const gameState = {
+      roundIndex: 0,
+      order: [],
+      questionTypes: [],
+      answers: [],
+      startedAt: null,
+      isRoundChecked: false,
+      selectedChoice: null
+    };
+
+    let lastFocusedElement = null;
+
+    // ==== ЭЛЕМЕНТЫ DOM ====
+    const roundContainer = document.getElementById('roundContainer');
+    const roundBody = document.getElementById('roundBody');
+    const roundTitle = document.getElementById('roundTitle');
+    const feedbackNode = document.getElementById('feedback');
+    const roundCounter = document.getElementById('roundCounter');
+    const progressBar = document.getElementById('progressBar');
+    const progressSummary = document.getElementById('progressSummary');
+    const roundCounterDisplay = document.getElementById('roundCounterDisplay');
+    const resultsDialog = document.getElementById('resultsDialog');
+    const resultsBody = document.getElementById('resultsBody');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // ==== УТИЛИТЫ ====
+    function shuffle(array) {
+      const clone = array.slice();
+      for (let i = clone.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [clone[i], clone[j]] = [clone[j], clone[i]];
+      }
+      return clone;
+    }
+
+    function pickDistractors(correctId, count) {
+      const candidates = COLORS.filter(color => color.id !== correctId);
+      const shuffled = shuffle(candidates);
+      return shuffled.slice(0, count);
+    }
+
+    function normalizeInput(value) {
+      return value
+        .normalize('NFC')
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, ' ');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function moveFocusTo(target) {
+      const element = typeof target === 'string' ? document.querySelector(target) : target;
+      if (element && typeof element.focus === 'function') {
+        element.focus({ preventScroll: false });
+      }
+    }
+
+    function setTheme(theme) {
+      document.body.classList.remove('theme-light', 'theme-dark');
+      if (theme === 'dark') {
+        document.body.classList.add('theme-dark');
+        themeToggle.setAttribute('aria-pressed', 'true');
+        themeToggle.textContent = 'Светлая тема';
+      } else if (theme === 'light') {
+        document.body.classList.add('theme-light');
+        themeToggle.setAttribute('aria-pressed', 'true');
+        themeToggle.textContent = 'Тёмная тема';
+      } else {
+        applySystemTheme();
+      }
+    }
+
+    function applySystemTheme() {
+      document.body.classList.remove('theme-light', 'theme-dark');
+      themeToggle.setAttribute('aria-pressed', 'false');
+      themeToggle.textContent = 'Тема';
+    }
+
+    function persistTheme(theme) {
+      try {
+        localStorage.setItem(STORAGE_KEY_THEME, theme);
+      } catch (error) {
+        console.warn('Не удалось сохранить тему', error);
+      }
+    }
+
+    function restoreTheme() {
+      let storedTheme = null;
+      try {
+        storedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+      } catch (error) {
+        storedTheme = null;
+      }
+
+      if (storedTheme === 'light' || storedTheme === 'dark') {
+        setTheme(storedTheme);
+        return storedTheme;
+      }
+
+      applySystemTheme();
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function getCurrentColor() {
+      const colorId = gameState.order[gameState.roundIndex];
+      return COLORS.find(color => color.id === colorId);
+    }
+
+    function generateQuestionTypes() {
+      const types = [];
+      for (let i = 0; i < TOTAL_ROUNDS; i += 1) {
+        let choice = QUESTION_TYPES[Math.round(Math.random())];
+        if (i > 0 && choice === types[i - 1]) {
+          choice = QUESTION_TYPES.find(type => type !== types[i - 1]) || choice;
+        }
+        types.push(choice);
+      }
+      return types;
+    }
+
+    function announceFeedback(messageHtml, status) {
+      feedbackNode.innerHTML = `
+        <div class="result-status ${status === 'ok' ? 'ok' : 'error'}">${messageHtml}</div>
+      `;
+    }
+
+    function clearFeedback() {
+      feedbackNode.innerHTML = '';
+    }
+
+    function closeDialog(dialog) {
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+      if (lastFocusedElement) {
+        moveFocusTo(lastFocusedElement);
+        lastFocusedElement = null;
+      }
+    }
+
+    function trapFocus(dialog, event) {
+      const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      const focusables = Array.from(dialog.querySelectorAll(focusableSelectors)).filter(el => !el.hasAttribute('disabled'));
+      if (focusables.length === 0) {
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.key === 'Tab') {
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    // ==== РЕНДЕРИНГ ====
+    function renderProgress() {
+      const currentRound = Math.min(gameState.roundIndex + 1, TOTAL_ROUNDS);
+      const visibleRound = currentRound <= TOTAL_ROUNDS ? currentRound : TOTAL_ROUNDS;
+      roundCounter.textContent = visibleRound;
+      roundCounterDisplay.textContent = visibleRound;
+      progressBar.value = gameState.roundIndex;
+      progressBar.textContent = `${gameState.roundIndex}`;
+      if (gameState.roundIndex < TOTAL_ROUNDS) {
+        progressSummary.textContent = `Сейчас цвет: ${getCurrentColor().ruName}`;
+      } else {
+        progressSummary.textContent = 'Раунды завершены';
+      }
+    }
+
+    function renderRound() {
+      if (gameState.roundIndex >= TOTAL_ROUNDS) {
+        renderResults();
+        return;
+      }
+
+      const color = getCurrentColor();
+      const questionType = gameState.questionTypes[gameState.roundIndex];
+      gameState.isRoundChecked = false;
+      gameState.selectedChoice = null;
+      clearFeedback();
+
+      roundTitle.textContent = questionType === 'input' ? 'Введите французское название цвета' : 'Выберите соответствующий цвет';
+
+      if (questionType === 'input') {
+        roundBody.innerHTML = `
+          <div class="text-center">
+            <div class="color-swatch" role="img" aria-label="Цвет ${color.ruName}" style="background:${color.hex}"></div>
+          </div>
+          <form id="inputForm">
+            <label class="sr-only" for="colorInput">Введите французское название цвета</label>
+            <input type="text" id="colorInput" name="color" autocomplete="off" inputmode="latin" placeholder="Французское слово" required />
+            <div class="button-row">
+              <button type="submit" class="btn-primary" id="checkButton">Проверить</button>
+            </div>
+          </form>
+        `;
+
+        const form = document.getElementById('inputForm');
+        form.addEventListener('submit', onSubmitInputAnswer);
+        moveFocusTo('#colorInput');
+      } else {
+        const distractors = pickDistractors(color.id, 3);
+        const options = shuffle([color, ...distractors]);
+        const optionsHtml = options
+          .map((option, index) => `
+            <button type="button" class="choice-option" role="radio" aria-checked="false" data-id="${option.id}" data-index="${index}" aria-label="${option.ruName}">
+              <div class="color-swatch small" style="background:${option.hex}"></div>
+              <div class="option-label">${option.ruName}</div>
+            </button>
+          `)
+          .join('');
+
+        roundBody.innerHTML = `
+          <div class="text-center">
+            <p class="muted">Подберите соответствующий цвет:</p>
+            <p class="round-title" aria-live="polite">${color.frName} <span class="pronounce">${color.frIPA} ${color.ruPhon}</span></p>
+          </div>
+          <div class="choice-group" role="radiogroup" aria-label="Подберите цвет" id="choiceGroup">
+            ${optionsHtml}
+          </div>
+          <div class="button-row">
+            <button type="button" class="btn-primary" id="choiceSubmit" disabled>Проверить</button>
+          </div>
+        `;
+
+        const choiceGroup = document.getElementById('choiceGroup');
+        const buttons = choiceGroup.querySelectorAll('.choice-option');
+        buttons.forEach(button => {
+          button.addEventListener('click', () => onSelectChoice(button.dataset.id, buttons));
+          button.addEventListener('keydown', event => handleChoiceKeydown(event, buttons));
+        });
+        document.getElementById('choiceSubmit').addEventListener('click', onSubmitChoiceAnswer);
+        moveFocusTo(buttons[0]);
+      }
+      renderProgress();
+    }
+
+    function formatUserAnswer(answer) {
+      const label = answer.type === 'choice' ? 'Вы выбрали' : 'Ваш ответ';
+      const cleanedValue = typeof answer.userAnswer === 'string' ? answer.userAnswer.trim() : '';
+      const value = cleanedValue ? escapeHtml(cleanedValue) : '—';
+      return `${label}: ${value}`;
+    }
+
+    function renderResults() {
+      roundCounter.textContent = TOTAL_ROUNDS;
+      roundCounterDisplay.textContent = TOTAL_ROUNDS;
+      progressBar.value = TOTAL_ROUNDS;
+      progressBar.textContent = `${TOTAL_ROUNDS}`;
+      progressSummary.textContent = 'Раунды завершены';
+
+      const correctCount = gameState.answers.filter(answer => answer.isCorrect).length;
+      resultsBody.innerHTML = `
+        <p class="result-status ${correctCount >= TOTAL_ROUNDS / 2 ? 'ok' : 'error'}">Вы ответили верно на ${correctCount} из ${TOTAL_ROUNDS}</p>
+        <ul class="result-list">
+          ${gameState.answers
+            .map(answer => {
+              const color = COLORS.find(item => item.id === answer.colorId);
+              return `
+                <li class="result-item">
+                  <div class="meta">
+                    <span><strong>${color.ruName}</strong></span>
+                    <span class="badge ${answer.isCorrect ? 'ok' : 'error'}">${answer.isCorrect ? 'верно' : 'ошибка'}</span>
+                  </div>
+                  <div class="answer-display">
+                    <div class="color-swatch small" style="background:${color.hex}" aria-hidden="true"></div>
+                    <strong>${color.frName}</strong>
+                    <span class="pronounce">${color.frIPA} ${color.ruPhon}</span>
+                    <span class="muted">${formatUserAnswer(answer)}</span>
+                  </div>
+                </li>
+              `;
+            })
+            .join('')}
+        </ul>
+        <div class="button-row">
+          <button type="button" class="btn-primary" id="playAgain">Сыграть снова</button>
+          <button type="button" class="btn-ghost" id="backHome">Домой</button>
+        </div>
+      `;
+
+      attachResultsListeners();
+      openDialog(resultsDialog);
+    }
+
+    function renderAnswerReveal(color, isCorrect, userValue, answerType = 'input') {
+      announceFeedback(
+        `${isCorrect ? 'Верно!' : 'Неверно.'} Правильный ответ: <strong>${color.frName}</strong> <span class="pronounce">${color.frIPA} ${color.ruPhon}</span>`,
+        isCorrect ? 'ok' : 'error'
+      );
+
+      const userLabel = answerType === 'choice' ? 'Вы выбрали' : 'Ваш ответ';
+      const displayUserValue = typeof userValue === 'string' ? userValue.trim() : '';
+      const revealHtml = `
+        <div class="answer-display">
+          <div class="color-swatch small" style="background:${color.hex}"></div>
+          <strong>${color.frName}</strong>
+          <span class="pronounce">${color.frIPA} ${color.ruPhon}</span>
+          ${typeof userValue === 'string' ? `<span class="muted">${userLabel}: ${displayUserValue ? escapeHtml(displayUserValue) : '—'}</span>` : ''}
+        </div>
+      `;
+
+      const existingReveal = roundBody.querySelector('.answer-display');
+      if (!existingReveal) {
+        const revealContainer = document.createElement('div');
+        revealContainer.innerHTML = revealHtml;
+        roundBody.appendChild(revealContainer);
+      }
+    }
+
+    // ==== ЛОГИКА ВЫБОРА ====
+    function handleChoiceKeydown(event, buttons) {
+      const { key } = event;
+      const currentIndex = Number(event.currentTarget.dataset.index);
+      if (['ArrowRight', 'ArrowDown'].includes(key)) {
+        event.preventDefault();
+        const nextIndex = (currentIndex + 1) % buttons.length;
+        buttons[nextIndex].focus();
+      } else if (['ArrowLeft', 'ArrowUp'].includes(key)) {
+        event.preventDefault();
+        const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+        buttons[prevIndex].focus();
+      } else if (['Enter', ' '].includes(key)) {
+        event.preventDefault();
+        onSelectChoice(event.currentTarget.dataset.id, buttons);
+      }
+    }
+
+    function onSelectChoice(colorId, buttons) {
+      if (gameState.isRoundChecked) {
+        return;
+      }
+      gameState.selectedChoice = Number(colorId);
+      buttons.forEach(button => {
+        const isActive = Number(button.dataset.id) === gameState.selectedChoice;
+        button.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      });
+      document.getElementById('choiceSubmit').disabled = false;
+    }
+
+    function onSubmitChoiceAnswer() {
+      if (gameState.isRoundChecked) {
+        onNextRound();
+        return;
+      }
+
+      if (typeof gameState.selectedChoice !== 'number') {
+        announceFeedback('Выберите один из вариантов.', 'error');
+        return;
+      }
+
+      const color = getCurrentColor();
+      const isCorrect = gameState.selectedChoice === color.id;
+      gameState.answers.push({
+        colorId: color.id,
+        type: 'choice',
+        isCorrect,
+        userAnswer: COLORS.find(item => item.id === gameState.selectedChoice)?.ruName || '',
+        correctAnswer: color.frName
+      });
+
+      gameState.isRoundChecked = true;
+      const selectedColor = COLORS.find(item => item.id === gameState.selectedChoice);
+      renderAnswerReveal(color, isCorrect, selectedColor ? selectedColor.ruName : '', 'choice');
+
+      const submitButton = document.getElementById('choiceSubmit');
+      submitButton.textContent = 'Далее';
+      submitButton.disabled = false;
+      submitButton.classList.remove('btn-primary');
+      submitButton.classList.add('btn-surface');
+    }
+
+    function onSubmitInputAnswer(event) {
+      event.preventDefault();
+      if (gameState.isRoundChecked) {
+        onNextRound();
+        return;
+      }
+
+      const input = document.getElementById('colorInput');
+      const userValue = normalizeInput(input.value);
+      const color = getCurrentColor();
+      const isCorrect = userValue === normalizeInput(color.frName);
+
+      gameState.answers.push({
+        colorId: color.id,
+        type: 'input',
+        isCorrect,
+        userAnswer: input.value,
+        correctAnswer: color.frName
+      });
+
+      gameState.isRoundChecked = true;
+      input.setAttribute('disabled', 'true');
+      const submit = document.getElementById('checkButton');
+      submit.textContent = 'Далее';
+      submit.classList.remove('btn-primary');
+      submit.classList.add('btn-surface');
+      renderAnswerReveal(color, isCorrect, input.value);
+
+      submit.removeEventListener('click', onNextRound);
+    }
+
+    function onNextRound() {
+      if (!gameState.isRoundChecked) {
+        return;
+      }
+      gameState.roundIndex += 1;
+      if (gameState.roundIndex >= TOTAL_ROUNDS) {
+        renderResults();
+      } else {
+        renderRound();
+      }
+    }
+
+    function onRestart() {
+      closeDialog(resultsDialog);
+      initGame();
+    }
+
+    function onBackHome() {
+      closeDialog(resultsDialog);
+      initGame(true);
+    }
+
+    function onToggleTheme() {
+      const hasLight = document.body.classList.contains('theme-light');
+      const hasDark = document.body.classList.contains('theme-dark');
+
+      if (!hasLight && !hasDark) {
+        setTheme('light');
+        persistTheme('light');
+        return;
+      }
+
+      if (hasLight) {
+        setTheme('dark');
+        persistTheme('dark');
+        return;
+      }
+
+      applySystemTheme();
+      try {
+        localStorage.removeItem(STORAGE_KEY_THEME);
+      } catch (error) {
+        console.warn('Не удалось удалить тему', error);
+      }
+    }
+
+    function openDialog(dialog) {
+      if (!dialog.open) {
+        lastFocusedElement = document.activeElement;
+        dialog.showModal();
+        const focusable = dialog.querySelector('button, [href], input, [tabindex]:not([tabindex="-1"])');
+        if (focusable) {
+          focusable.focus();
+        }
+      }
+    }
+
+    function attachResultsListeners() {
+      const playAgain = document.getElementById('playAgain');
+      const backHome = document.getElementById('backHome');
+      const closeBtn = document.getElementById('closeResults');
+
+      playAgain.addEventListener('click', () => {
+        onRestart();
+        moveFocusTo('#roundContainer');
+      });
+
+      backHome.addEventListener('click', () => {
+        onBackHome();
+        moveFocusTo('#roundContainer');
+      });
+
+      closeBtn.addEventListener('click', () => {
+        closeDialog(resultsDialog);
+        moveFocusTo('#roundContainer');
+      });
+    }
+
+    // ==== ИНИЦИАЛИЗАЦИЯ ====
+    function initGame(resetAnswersOnly = false) {
+      gameState.roundIndex = 0;
+      gameState.order = shuffle(COLORS.map(color => color.id));
+      gameState.questionTypes = generateQuestionTypes();
+      gameState.answers = [];
+      gameState.startedAt = Date.now();
+      gameState.isRoundChecked = false;
+      gameState.selectedChoice = null;
+
+      if (resetAnswersOnly) {
+        progressSummary.textContent = 'Начнём!';
+      }
+
+      renderRound();
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && resultsDialog.open) {
+        event.preventDefault();
+        closeDialog(resultsDialog);
+      }
+    });
+
+    resultsDialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      closeDialog(resultsDialog);
+    });
+
+    resultsDialog.addEventListener('keydown', event => trapFocus(resultsDialog, event));
+
+    themeToggle.addEventListener('click', onToggleTheme);
+
+    resultsDialog.addEventListener('close', () => {
+      closeDialog(resultsDialog);
+    });
+
+    restoreTheme();
+    initGame();
+  </script>
+</body>
+</html>
