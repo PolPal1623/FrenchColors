@@ -455,14 +455,14 @@
   <main id="app" role="main" aria-labelledby="appTitle">
     <h1 id="appTitle" class="sr-only">Couleurs FR — тренажёр цветов на французском языке</h1>
     <section class="progress-card" role="region" aria-labelledby="progressTitle">
-      <h2 id="progressTitle" class="sr-only">Прогресс тренировки: раунд <span id="roundCounter">1</span> из 8</h2>
+      <h2 id="progressTitle" class="sr-only">Прогресс тренировки: раунд <span id="roundCounter">1</span> из <span id="roundTotal">10</span></h2>
       <div class="progress-header">
         <div class="progress-display" aria-hidden="true">
           <span id="roundCounterDisplay">1</span>
-          <span class="progress-total">/ 8</span>
+          <span class="progress-total">/ <span id="roundTotalDisplay">10</span></span>
         </div>
       </div>
-      <progress id="progressBar" max="8" value="0" aria-describedby="progressTitle">0</progress>
+      <progress id="progressBar" max="10" value="0" aria-describedby="progressTitle">0</progress>
     </section>
 
     <section class="round-card" id="roundContainer" role="region" aria-live="polite" aria-labelledby="roundTitle" tabindex="-1">
@@ -494,7 +494,9 @@
       { id: 5, hex: '#2C3E50', ruName: 'чёрный', frName: 'noir', frIPA: '/nwaʁ/', ruPhon: '[нуар]' },
       { id: 6, hex: '#ECF0F1', ruName: 'белый', frName: 'blanc', frIPA: '/blɑ̃/', ruPhon: '[блан]' },
       { id: 7, hex: '#E67E22', ruName: 'оранжевый', frName: 'orange', frIPA: '/ɔʁɑ̃ʒ/', ruPhon: '[оранж]' },
-      { id: 8, hex: '#8E44AD', ruName: 'фиолетовый', frName: 'violet', frIPA: '/vjɔlɛ/', ruPhon: '[виолэ]' }
+      { id: 8, hex: '#8E44AD', ruName: 'фиолетовый', frName: 'violet', frIPA: '/vjɔlɛ/', ruPhon: '[виолэ]' },
+      { id: 9, hex: '#95A5A6', ruName: 'серый', frName: 'gris', frIPA: '/ɡʁi/', ruPhon: '[гри]' },
+      { id: 10, hex: '#A0522D', ruName: 'коричневый', frName: 'marron', frIPA: '/maʁɔ̃/', ruPhon: '[марон]' }
     ];
 
     const QUESTION_TYPES = ['input', 'choice'];
@@ -521,8 +523,10 @@
     const roundTitle = document.getElementById('roundTitle');
     const feedbackNode = document.getElementById('feedback');
     const roundCounter = document.getElementById('roundCounter');
+    const roundTotal = document.getElementById('roundTotal');
     const progressBar = document.getElementById('progressBar');
     const roundCounterDisplay = document.getElementById('roundCounterDisplay');
+    const roundTotalDisplay = document.getElementById('roundTotalDisplay');
     const resultsDialog = document.getElementById('resultsDialog');
     const resultsBody = document.getElementById('resultsBody');
     const themeToggle = document.getElementById('themeToggle');
@@ -657,13 +661,23 @@
     }
 
     // ==== РЕНДЕРИНГ ====
+    function updateRoundTotals() {
+      if (roundTotal) {
+        roundTotal.textContent = TOTAL_ROUNDS;
+      }
+      if (roundTotalDisplay) {
+        roundTotalDisplay.textContent = TOTAL_ROUNDS;
+      }
+      progressBar.max = TOTAL_ROUNDS;
+    }
+
     function renderProgress() {
       const currentRound = Math.min(gameState.roundIndex + 1, TOTAL_ROUNDS);
       const visibleRound = currentRound <= TOTAL_ROUNDS ? currentRound : TOTAL_ROUNDS;
       roundCounter.textContent = visibleRound;
       roundCounterDisplay.textContent = visibleRound;
       progressBar.value = gameState.roundIndex;
-      progressBar.textContent = `${gameState.roundIndex}`;
+      progressBar.textContent = `${gameState.roundIndex} из ${TOTAL_ROUNDS}`;
     }
 
     function renderRound() {
@@ -745,7 +759,7 @@
       roundCounter.textContent = TOTAL_ROUNDS;
       roundCounterDisplay.textContent = TOTAL_ROUNDS;
       progressBar.value = TOTAL_ROUNDS;
-      progressBar.textContent = `${TOTAL_ROUNDS}`;
+      progressBar.textContent = `${TOTAL_ROUNDS} из ${TOTAL_ROUNDS}`;
 
       const correctCount = gameState.answers.filter(answer => answer.isCorrect).length;
       resultsBody.innerHTML = `
@@ -969,6 +983,7 @@
       gameState.isRoundChecked = false;
       gameState.selectedChoice = null;
 
+      updateRoundTotals();
       renderRound();
     }
 
