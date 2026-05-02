@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Couleurs FR — тренажёр цветов</title>
+  <title>French Learning Suite · Цвета</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -11,14 +11,14 @@
       --surface: #ffffff;
       --fg: #1f2933;
       --muted: #5f6b7d;
-      --accent: #6366f1;
+      --accent: #2563eb;
       --ok: #2ecc71;
       --error: #e74c3c;
       --shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
       --radius: 16px;
       --transition: 180ms ease;
       --input-bg: rgba(255, 255, 255, 0.85);
-      --input-border: rgba(99, 102, 241, 0.3);
+      --input-border: rgba(37, 99, 235, 0.3);
       font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     }
 
@@ -28,10 +28,10 @@
         --surface: #111c34;
         --fg: #e2e8f0;
         --muted: #94a3b8;
-        --accent: #818cf8;
+        --accent: #60a5fa;
         --shadow: 0 18px 36px rgba(15, 23, 42, 0.55);
         --input-bg: rgba(17, 24, 39, 0.6);
-        --input-border: rgba(129, 140, 248, 0.4);
+        --input-border: rgba(96, 165, 250, 0.4);
       }
     }
 
@@ -40,10 +40,10 @@
       --surface: #ffffff;
       --fg: #1f2933;
       --muted: #5f6b7d;
-      --accent: #6366f1;
+      --accent: #2563eb;
       --shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
       --input-bg: rgba(255, 255, 255, 0.85);
-      --input-border: rgba(99, 102, 241, 0.3);
+      --input-border: rgba(37, 99, 235, 0.3);
     }
 
     body.theme-dark {
@@ -51,10 +51,10 @@
       --surface: #111c34;
       --fg: #e2e8f0;
       --muted: #94a3b8;
-      --accent: #818cf8;
+      --accent: #60a5fa;
       --shadow: 0 18px 36px rgba(15, 23, 42, 0.55);
       --input-bg: rgba(17, 24, 39, 0.6);
-      --input-border: rgba(129, 140, 248, 0.4);
+      --input-border: rgba(96, 165, 250, 0.4);
     }
 
     *, *::before, *::after {
@@ -88,6 +88,78 @@
     .brand {
       font-size: clamp(1.5rem, 3vw, 2rem);
       font-weight: 700;
+    }
+
+    .brand-copy {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .brand-copy small {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .suite-bar {
+      width: min(100%, 840px);
+      margin: 0 auto;
+      padding: 1rem clamp(1rem, 4vw, 2rem) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .suite-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--fg);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .suite-badge::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb, #f97316);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12);
+    }
+
+    .suite-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .suite-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0.75rem 1.1rem;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .suite-link:hover,
+    .suite-link:focus-visible {
+      transform: translateY(-2px);
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+      outline: none;
     }
 
     nav {
@@ -446,8 +518,18 @@
   </style>
 </head>
 <body>
+  <div class="suite-bar">
+    <a class="suite-badge" href="https://polpal1623.github.io/FrenchLibrary/">French Learning Suite</a>
+    <div class="suite-actions">
+      <a href="https://polpal1623.github.io/FrenchLibrary/" class="suite-link">Все приложения</a>
+      <a href="https://github.com/PolPal1623/FrenchColors" class="suite-link">GitHub</a>
+    </div>
+  </div>
   <header role="banner">
-    <div class="brand" aria-label="Логотип Couleurs FR">Couleurs FR</div>
+    <div class="brand-copy">
+      <div class="brand" aria-label="Логотип Couleurs FR">Couleurs FR</div>
+      <small>10 цветов, два формата вопросов и единый стиль French Learning Suite.</small>
+    </div>
     <nav aria-label="Основная навигация">
       <button type="button" class="btn-ghost theme-toggle" aria-pressed="false" aria-label="Переключить тему" id="themeToggle">Светлая тема</button>
     </nav>
@@ -474,7 +556,7 @@
       <div class="feedback-region" id="feedback"></div>
     </section>
   </main>
-  <footer role="contentinfo">Сделано для практики — Couleurs FR · v1.0</footer>
+  <footer role="contentinfo">French Learning Suite · Couleurs FR · 10 цветов для коротких повторений</footer>
 
   <dialog id="resultsDialog" aria-labelledby="resultsTitle" aria-modal="true">
     <div class="dialog-header">
